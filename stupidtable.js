@@ -26,8 +26,12 @@
       // Return the resulting indexes of a sort so we can apply
       // this result elsewhere. This returns an array of index numbers.
       // return[0] = x means "arr's 0th element is now at x"
-      var sort_map =  function(arr, sort_function){
+      var sort_map =  function(arr, sort_function, sort_dir){
         var sorted = arr.slice(0).sort(sort_function);
+        if (sort_dir === $.fn.stupidtable.dir.DESC) {
+          sorted.reverse();
+        }
+
         var map = [];
         var index = 0;
         for(var i=0; i<arr.length; i++){
@@ -52,17 +56,6 @@
           clone[newIndex] = arr[i];
         }
         return clone;
-      };
-
-      // Returns true if array is sorted, false otherwise.
-      // Checks for both ascending and descending
-      var is_sorted_array = function(arr, sort_function){
-        var clone = arr.slice(0);
-        var reversed = arr.slice(0).reverse();
-        var sorted = arr.slice(0).sort(sort_function);
-
-        // Check if the array is sorted in either direction.
-        return arrays_equal(clone, sorted) || arrays_equal(reversed, sorted);
       };
 
       // ==================================================== //
@@ -110,19 +103,8 @@
             column.push(order_by);
           });
 
-          // If the column is already sorted, just reverse the order. The sort
-          // map is just reversing the indexes.
-          var theMap = [];
-          var sorted = is_sorted_array(column, sortMethod);
-          if (sorted && $this.data("sort-dir")) {
-            column.reverse();
-            for (var i = column.length-1; i >= 0; i--) {
-              theMap.push(i);
-            }
-          }
-          else {
-            theMap = sort_map(column, sortMethod);
-          }
+          // Create the sort map.
+          var theMap = sort_map(column, sortMethod, sort_dir);
 
           // Reset siblings
           $table.find("th").data("sort-dir", null).removeClass("sorting-desc sorting-asc");
