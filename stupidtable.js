@@ -69,8 +69,8 @@
         var th_index = 0;
         var dir = $.fn.stupidtable.dir;
 
-        $table.find('th').slice(0, $this.index()).each(function () {
-          var cols = $(this).attr('colspan') || 1;
+        $table.find("th").slice(0, $this.index()).each(function () {
+          var cols = $(this).attr("colspan") || 1;
           th_index += parseInt(cols,10);
         });
 
@@ -84,8 +84,10 @@
         var sort_dir = $this.data("sort-dir") === dir.ASC ? dir.DESC : dir.ASC;
 
         // Trigger `beforetablesort` event that calling scripts can hook into;
-        // pass parameters for sorted column index and sorting direction
+        // pass parameters for sorted column index and sorting direction.
         $table.trigger("beforetablesort", {column: th_index, direction: sort_dir});
+        // More reliable method of forcing a redraw
+        $table.css("display");
 
         // Run sorting asynchronously on a timout to force browser redraw after
         // `beforetablesort` callback. Also avoids locking up the browser too much.
@@ -115,8 +117,10 @@
           var sortedTRs = $(apply_sort_map(trs, theMap));
           $table.children("tbody").append(sortedTRs);
 
-          // Trigger `aftertablesort` event. Similar to `beforetablesort`
+          // Trigger `aftertablesort` event, similar to `beforetablesort`.
           $table.trigger("aftertablesort", {column: th_index, direction: sort_dir});
+          // More reliable method of forcing a redraw
+          $table.css("display");
         }, 10);
       });
     });
