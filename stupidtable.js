@@ -74,14 +74,20 @@
           th_index += parseInt(cols,10);
         });
 
+        // Determine (and/or reverse) sorting direction, default `asc`
+        var sort_dir = $this.data("sort-dir") === dir.ASC ? dir.DESC : dir.ASC;
+
+        // Choose appropriate sorting function. If we're sorting descending, check
+        // for a `data-sort-desc` attribute.
+        if ( sort_dir == dir.DESC )
+          var type = $this.data("sort-desc") || $this.data("sort") || null;
+        else
+          var type = $this.data("sort") || null;
+
         // Prevent sorting if no type defined
-        var type = $this.data("sort") || null;
         if (type === null) {
           return;
         }
-
-        // Determine (and/or reverse) sorting direction, default `asc`
-        var sort_dir = $this.data("sort-dir") === dir.ASC ? dir.DESC : dir.ASC;
 
         // Trigger `beforetablesort` event that calling scripts can hook into;
         // pass parameters for sorted column index and sorting direction.
