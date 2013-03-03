@@ -32,10 +32,33 @@
         }
       });
 
+      table.bind('beforesortmapcreate', function (event, data) {
+        // data.sorted - the sorted list of elements
+        // data.direction - the sorting direction (either asc or desc)
+        // console.log(data.sorted);
+
+        var len = data.sorted.length;
+        var move = [];
+        for ( var i = 0; i < len; i++ )
+        {
+          if (data.sorted[i] === "")
+          {
+            var tmp = data.sorted.splice(i,1);
+            move.push(tmp[0]);
+            i--;
+          }
+        }
+
+        for ( var i = 0; i < move.length; i++ )
+          data.sorted.push(move[i]);
+
+        // console.log(data.sorted);
+      });
+
       table.bind('beforetablesort', function (event, data) {
         // data.column - the index of the column sorted after a click
         // data.direction - the sorting direction (either asc or desc)
-        $("#msg").text("Sorting index " + data.column)
+        $("#msg").text("Sorting index " + data.column);
       });
 
       table.bind('aftertablesort', function (event, data) {

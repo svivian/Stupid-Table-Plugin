@@ -32,6 +32,8 @@
           sorted.reverse();
         }
 
+        $table.trigger("beforesortmapcreate", {sorted: sorted, direction: sort_dir});
+
         var map = [];
         var index = 0;
         for(var i=0; i<arr.length; i++){
