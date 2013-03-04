@@ -32,14 +32,41 @@
         }
       });
 
-      table.bind('beforesortmapcreate', function (event, data) {
+      table.bind("beforesortmapcreate", function (event, data) {
+        // data.values - the list of values from the column
+        // data.datatype - the datatype (sort function) of the column
+        // data.direction - the sorting direction (either asc or desc)
+        // console.log(data.values);
+
+        var len = data.values.length;
+        for (var i = 0; i < len; i++)
+        {
+          if (data.datatype == "string" && data.values[i] == "")
+          {
+            if (data.direction == "asc")
+              data.values[i] = "~~~~~"; // high ASCII value
+          }
+          else if (data.datatype == "int" && data.values[i] == "")
+          {
+            if (data.direction == "asc" )
+              data.values[i] = 99999;
+            else
+              data.values[i] = -99999;
+          }
+        }
+
+        // console.log(data.values);
+      });
+
+      table.bind("aftercolumnsorted", function (event, data) {
         // data.sorted - the sorted list of elements
         // data.direction - the sorting direction (either asc or desc)
         // console.log(data.sorted);
+        return; //TEMP
 
         var len = data.sorted.length;
         var move = [];
-        for ( var i = 0; i < len; i++ )
+        for (var i = 0; i < len; i++)
         {
           if (data.sorted[i] === "")
           {
@@ -49,19 +76,19 @@
           }
         }
 
-        for ( var i = 0; i < move.length; i++ )
+        for (var i = 0; i < move.length; i++)
           data.sorted.push(move[i]);
 
         // console.log(data.sorted);
       });
 
-      table.bind('beforetablesort', function (event, data) {
+      table.bind("beforetablesort", function (event, data) {
         // data.column - the index of the column sorted after a click
         // data.direction - the sorting direction (either asc or desc)
         $("#msg").text("Sorting index " + data.column);
       });
 
-      table.bind('aftertablesort', function (event, data) {
+      table.bind("aftertablesort", function (event, data) {
         var th = $(this).find("th");
         th.find(".arrow").remove();
         var dir = $.fn.stupidtable.dir;
@@ -112,6 +139,7 @@
         <th>Can't sort me!</th>
         <th data-sort="date">date</th>
         <th data-sort="int">Letter frequency</th>
+        <th data-sort="int">int blanks</th>
       </tr>
     </thead>
     <tbody>
@@ -122,6 +150,7 @@
         <td>arbitrary</td>
         <td>Sep 15, 2002</td>
         <td data-sort-value="0">E</td>
+        <td></td>
       </tr>
       <tr class="awesome">
         <td>95</td>
@@ -130,6 +159,7 @@
         <td>pointless</td>
         <td>Aug 07, 2004</td>
         <td data-sort-value="1">T</td>
+        <td>5</td>
       </tr>
       <tr>
         <td>2</td>
@@ -138,6 +168,7 @@
         <td>silly</td>
         <td>Mar 15, 1986</td>
         <td data-sort-value="2">A</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>-53</td>
@@ -146,6 +177,7 @@
         <td>eccentric</td>
         <td>Feb 27, 2086</td>
         <td data-sort-value="3">O</td>
+        <td>15</td>
       </tr>
       <tr>
         <td>195</td>
@@ -154,6 +186,7 @@
         <td>garbage</td>
         <td>Mar 15, 1986</td>
         <td data-sort-value="4">I</td>
+        <td>-2</td>
       </tr>
     </tbody>
   </table>

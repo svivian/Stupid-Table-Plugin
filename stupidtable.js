@@ -32,7 +32,7 @@
           sorted.reverse();
         }
 
-        $table.trigger("beforesortmapcreate", {sorted: sorted, direction: sort_dir});
+        $table.trigger("aftercolumnsorted", {sorted: sorted, direction: sort_dir});
 
         var map = [];
         var index = 0;
@@ -108,6 +108,7 @@
           });
 
           // Create the sort map.
+          $table.trigger("beforesortmapcreate", {"values": column, "datatype": type, "direction": sort_dir});
           var theMap = sort_map(column, sortMethod, sort_dir);
 
           // Reset siblings
